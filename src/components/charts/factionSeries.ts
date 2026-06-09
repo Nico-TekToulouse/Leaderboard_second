@@ -23,3 +23,16 @@ export type FactionMeta = {
 
 /** Map clé interne → métadonnées, construite depuis les FactionRow côté serveur. */
 export type FactionMetaMap = Record<FactionSeriesKey, FactionMeta>;
+
+/**
+ * Construit les séries de graphique avec les couleurs réelles de la BDD.
+ * Chaque faction est identifiée par sa clé interne (color: FactionName) et sa couleur hex réelle.
+ */
+export function buildFactionSeries(
+  factions: ReadonlyArray<{ color: FactionName; hexColor: string }>,
+): FactionSeries[] {
+  return FACTION_SERIES.map((s) => {
+    const match = factions.find((f) => f.color === s.key);
+    return { key: s.key, color: match?.hexColor ?? s.color };
+  });
+}

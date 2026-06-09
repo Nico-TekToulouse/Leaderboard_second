@@ -25,6 +25,7 @@ import {
   IconFileImport,
   IconX,
   IconFile,
+  IconDownload,
 } from "@tabler/icons-react";
 import { useState } from "react";
 import Papa from "papaparse";
@@ -54,6 +55,157 @@ type ImportUsersModalProps = {
 };
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// --- ZIP / XLSX data-validation patcher ---
+
+const CRC32_TABLE: Uint32Array = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let j = 0; j < 8; j++) c = c & 1 ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+    t[i] = c;
+  }
+  return t;
+})();
+
+function crc32(data: Uint8Array): number {
+  let crc = 0xffffffff;
+  for (const b of data) crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ b) & 0xff];
+  return (crc ^ 0xffffffff) >>> 0;
+}
+
+function concatBytes(arrays: Uint8Array[]): Uint8Array {
+  const out = new Uint8Array(arrays.reduce((s, a) => s + a.length, 0));
+  let off = 0;
+  for (const a of arrays) { out.set(a, off); off += a.length; }
+  return out;
+}
+
+type ZipEntry = { name: string; data: Uint8Array; dosTime: number; dosDate: number };
+
+function parseZipEntries(bytes: Uint8Array): ZipEntry[] {
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const dec = new TextDecoder();
+  const entries: ZipEntry[] = [];
+  let pos = 0;
+  while (pos + 30 <= bytes.length && dv.getUint32(pos, true) === 0x04034b50) {
+    const dosTime   = dv.getUint16(pos + 10, true);
+    const dosDate   = dv.getUint16(pos + 12, true);
+    const compSize  = dv.getUint32(pos + 18, true);
+    const nameLen   = dv.getUint16(pos + 26, true);
+    const extraLen  = dv.getUint16(pos + 28, true);
+    const dataStart = pos + 30 + nameLen + extraLen;
+    entries.push({
+      name: dec.decode(bytes.slice(pos + 30, pos + 30 + nameLen)),
+      data: bytes.slice(dataStart, dataStart + compSize),
+      dosTime,
+      dosDate,
+    });
+    pos = dataStart + compSize;
+  }
+  return entries;
+}
+
+function buildZip(entries: ZipEntry[]): Uint8Array {
+  const enc = new TextEncoder();
+  const locals: Uint8Array[] = [];
+  const central: Uint8Array[] = [];
+  let offset = 0;
+
+  for (const { name, data, dosTime, dosDate } of entries) {
+    const nb   = enc.encode(name);
+    const checksum = crc32(data);
+    const size = data.length;
+
+    const lh = new Uint8Array(30 + nb.length);
+    const lv = new DataView(lh.buffer);
+    lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true);
+    lv.setUint16(8, 0, true); // stored
+    lv.setUint16(10, dosTime, true); lv.setUint16(12, dosDate, true);
+    lv.setUint32(14, checksum, true); lv.setUint32(18, size, true); lv.setUint32(22, size, true);
+    lv.setUint16(26, nb.length, true);
+    lh.set(nb, 30);
+    locals.push(lh, data);
+
+    const cd = new Uint8Array(46 + nb.length);
+    const cv = new DataView(cd.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true);
+    cv.setUint16(10, 0, true); // stored
+    cv.setUint16(12, dosTime, true); cv.setUint16(14, dosDate, true);
+    cv.setUint32(16, checksum, true); cv.setUint32(20, size, true); cv.setUint32(24, size, true);
+    cv.setUint16(28, nb.length, true);
+    cv.setUint32(42, offset, true);
+    cd.set(nb, 46);
+    central.push(cd);
+
+    offset += 30 + nb.length + size;
+  }
+
+  const dir = concatBytes(central);
+  const eocd = new Uint8Array(22);
+  const ev = new DataView(eocd.buffer);
+  ev.setUint32(0, 0x06054b50, true);
+  ev.setUint16(8, entries.length, true); ev.setUint16(10, entries.length, true);
+  ev.setUint32(12, dir.length, true); ev.setUint32(16, offset, true);
+  return concatBytes([...locals, dir, eocd]);
+}
+
+function addDropdownToSheet(xlsxBytes: Uint8Array, sqref: string, values: string[]): Uint8Array {
+  const dec = new TextDecoder();
+  const enc = new TextEncoder();
+  const entries = parseZipEntries(xlsxBytes);
+  const sheet = entries.find(e => e.name === "xl/worksheets/sheet1.xml");
+  if (!sheet) return xlsxBytes;
+  const validationXml = `<dataValidations count="1"><dataValidation type="list" allowBlank="1" showDropDown="0" sqref="${sqref}"><formula1>"${values.join(",")}"</formula1></dataValidation></dataValidations>`;
+  sheet.data = enc.encode(dec.decode(sheet.data).replace("</worksheet>", `${validationXml}</worksheet>`));
+  return buildZip(entries);
+}
+
+function downloadCsvTemplate(factions: Faction[]) {
+  const faction1 = factions[0]?.name ?? "fire";
+  const faction2 = factions[1]?.name ?? "water";
+  const validFactions = factions.map((f) => f.name).join(", ");
+  const lines = [
+    `# Factions valides : ${validFactions}`,
+    "prénom,nom,email,faction",
+    `Marie,Dupont,marie.dupont@exemple.com,${faction1}`,
+    `Jean,Martin,jean.martin@exemple.com,${faction2}`,
+  ];
+  const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "modele_import_utilisateurs.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+const FACTION_CHOICES = ["Bats", "Owls", "Tigers", "Turtles", "none"];
+
+function downloadXlsxTemplate(factions: Faction[]) {
+  const faction1 = factions[0]?.name ?? "Bats";
+  const faction2 = factions[1]?.name ?? "Owls";
+  const rows = [
+    { prénom: "Marie", nom: "Dupont", email: "marie.dupont@exemple.com", faction: faction1 },
+    { prénom: "Jean", nom: "Martin", email: "jean.martin@exemple.com", faction: faction2 },
+  ];
+  const wsData = XLSX.utils.json_to_sheet(rows);
+  wsData["!cols"] = [{ wch: 15 }, { wch: 15 }, { wch: 30 }, { wch: 12 }];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, wsData, "Utilisateurs");
+
+  const rawBytes = XLSX.write(wb, { type: "array", bookType: "xlsx" }) as Uint8Array;
+  const patchedBytes = addDropdownToSheet(rawBytes, "D2:D1000", FACTION_CHOICES);
+
+  const blob = new Blob([patchedBytes.buffer.slice(0) as ArrayBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "modele_import_utilisateurs.xlsx";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 const ACCEPTED_MIME = [
   "application/json",
   "text/csv",
@@ -81,7 +233,13 @@ function normalizeRow(
     raw["lastname"] ??
     ""
   ).trim();
-  const email = (raw["email"] ?? raw["mail"] ?? "").trim().toLowerCase();
+  const email = (
+    raw["email"] ??
+    raw["mail"] ??
+    raw["email élève"] ??
+    raw["email eleve"] ??
+    ""
+  ).trim().toLowerCase();
   const factionRaw = (raw["faction"] ?? "").trim();
 
   if (!first_name) errors.push({ rowIndex, field: "prénom", message: "Champ obligatoire manquant." });
@@ -137,6 +295,7 @@ function parseCSV(text: string, factionsByName: Map<string, string>): ParsedFile
   const result = Papa.parse<Record<string, string>>(text, {
     header: true,
     skipEmptyLines: true,
+    comments: "#",
     transformHeader: (h) => h.toLowerCase().trim(),
   });
 
@@ -273,6 +432,26 @@ export default function ImportUsersModal({
             <Text fz="xs" c="dimmed">+ optionnel : <Code fz="xs">faction</Code></Text>
           </Group>
           <Text fz="xs" c="dimmed" mt={4}>Formats acceptés : JSON · CSV · XLSX</Text>
+          <Group gap="xs" mt={6}>
+            <Button
+              variant="subtle"
+              size="xs"
+              leftSection={<IconDownload size={14} />}
+              onClick={() => downloadCsvTemplate(factions)}
+              px={0}
+            >
+              Modèle CSV
+            </Button>
+            <Button
+              variant="subtle"
+              size="xs"
+              leftSection={<IconDownload size={14} />}
+              onClick={() => downloadXlsxTemplate(factions)}
+              px={0}
+            >
+              Modèle XLSX
+            </Button>
+          </Group>
         </Paper>
 
         {globalError && (

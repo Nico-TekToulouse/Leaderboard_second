@@ -39,7 +39,7 @@ export default function DeleteActivityModal({
       const data = (await res.json()) as { error?: string };
       notifications.show({
         title: "Erreur",
-        message: data.error ?? "Impossible de supprimer l'activité.",
+        message: data.error ?? "Impossible de supprimer l'Epitech Race.",
         color: "red",
         autoClose: 4000,
       });
@@ -61,7 +61,7 @@ export default function DeleteActivityModal({
           <ThemeIcon color="red" variant="light" size="md">
             <IconTrash size={16} />
           </ThemeIcon>
-          <Text fw={600}>Supprimer l&apos;activité</Text>
+          <Text fw={600}>Supprimer l&apos;Epitech Race</Text>
         </Group>
       }
       size="sm"
@@ -72,13 +72,13 @@ export default function DeleteActivityModal({
           color="red"
           variant="light"
         >
-          Cette action est irréversible. Tous les scores associés à cette activité seront
+          Cette action est irréversible. Tous les scores associés à cette Epitech Race seront
           également supprimés.
         </Alert>
 
         {activity && (
           <Text fz="sm">
-            Êtes-vous sûr de vouloir supprimer l&apos;activité{" "}
+            Êtes-vous sûr de vouloir supprimer l&apos;Epitech Race{" "}
             <Text component="span" fw={700}>
               {activity.name}
             </Text>{" "}

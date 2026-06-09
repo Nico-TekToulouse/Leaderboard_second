@@ -16,20 +16,6 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { fetchAllFactionsWithMembers } from "@/lib/members";
 import { fetchFactionLeaderboard } from "@/lib/factions";
 
-const FACTION_COLORS: Record<string, string> = {
-  "#EF4444": "red",
-  "#22C55E": "green",
-  "#3B82F6": "blue",
-  "#A855F7": "violet",
-  "#E53935": "red",
-  "#43A047": "green",
-  "#1E88E5": "blue",
-  "#8E24AA": "violet",
-};
-
-function hexToMantine(hex: string): string {
-  return FACTION_COLORS[hex] ?? "blue";
-}
 
 export default async function FactionListPage() {
   const [factionsWithMembers, leaderboard] = await Promise.all([
@@ -86,7 +72,6 @@ export default async function FactionListPage() {
 
       <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
         {factionsWithMembers.map((faction) => {
-          const mantineColor = hexToMantine(faction.color);
           const rank = rankByFaction[faction.id];
           const leaderboardFaction = leaderboard.find((f) => f.id === faction.id);
           const totalPoints = leaderboardFaction?.totalPoints ?? 0;
@@ -110,7 +95,7 @@ export default async function FactionListPage() {
                     size="md"
                     radius="xl"
                     style={{ backgroundColor: faction.color }}
-                    color={mantineColor}
+                    color={faction.color}
                   >
                     {faction.name[0].toUpperCase()}
                   </Avatar>
@@ -124,7 +109,7 @@ export default async function FactionListPage() {
                   </Stack>
                 </Group>
                 <Stack gap={4} align="flex-end">
-                  <Badge color={mantineColor} variant="light">
+                  <Badge color={faction.color} variant="light">
                     {RANK_LABELS[rank] ?? `${rank}ème`}
                   </Badge>
                   <Text fz="xs" c="dimmed">
@@ -144,7 +129,7 @@ export default async function FactionListPage() {
                       <Group key={member.id} gap="sm" px={4} py={4}
                         style={{ borderRadius: 6, background: "var(--mantine-color-gray-0)" }}
                       >
-                        <ThemeIcon size="sm" radius="xl" color={mantineColor} variant="light">
+                        <ThemeIcon size="sm" radius="xl" color={faction.color} variant="light">
                           <IconUser size={12} />
                         </ThemeIcon>
                         <Text fz="sm" fw={500}>

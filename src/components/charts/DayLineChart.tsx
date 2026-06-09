@@ -13,18 +13,18 @@ import {
 import { Center, Stack, Text, ThemeIcon } from "@mantine/core";
 import { IconChartLine } from "@tabler/icons-react";
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
-import { FACTION_SERIES } from "@/components/charts/factionSeries";
-import type { FactionMetaMap } from "@/components/charts/factionSeries";
+import type { FactionMetaMap, FactionSeries } from "@/components/charts/factionSeries";
 import type { DayChartPoint } from "@/lib/factions";
 
 type DayLineChartProps = {
   data: DayChartPoint[];
   meta: FactionMetaMap;
+  factionSeries: FactionSeries[];
 };
 
 type LegendFormatterResult = React.ReactNode;
 
-export default function DayLineChart({ data, meta }: DayLineChartProps) {
+export default function DayLineChart({ data, meta, factionSeries }: DayLineChartProps) {
   if (data.length === 0) {
     return (
       <Center py={60}>
@@ -76,6 +76,7 @@ export default function DayLineChart({ data, meta }: DayLineChartProps) {
               payload={props.payload}
               label={typeof props.label === "string" ? props.label : undefined}
               meta={meta}
+              factionSeries={factionSeries}
             />
           )}
         />
@@ -85,7 +86,7 @@ export default function DayLineChart({ data, meta }: DayLineChartProps) {
           formatter={legendFormatter}
         />
 
-        {FACTION_SERIES.map((f) => (
+        {factionSeries.map((f) => (
           <Line
             key={f.key}
             type="monotone"

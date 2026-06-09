@@ -18,7 +18,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     .single();
 
   if (error || !data) {
-    return NextResponse.json({ error: "Activité introuvable." }, { status: 404 });
+    return NextResponse.json({ error: "Epitech Race introuvable." }, { status: 404 });
   }
 
   return NextResponse.json(data);
@@ -29,7 +29,7 @@ export async function PUT(request: NextRequest, context: RouteContext) {
   const body = (await request.json()) as ActivityUpdate;
 
   if (!body.name?.trim()) {
-    return NextResponse.json({ error: "Le nom de l'activité est requis." }, { status: 400 });
+    return NextResponse.json({ error: "Le nom de l'Epitech Race est requis." }, { status: 400 });
   }
   if (!body.date) {
     return NextResponse.json({ error: "La date est requise." }, { status: 400 });

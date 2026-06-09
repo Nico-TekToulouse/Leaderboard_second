@@ -12,8 +12,8 @@ type ActivityFeedProps = {
 export default function ActivityFeed({ scores, factionColor }: ActivityFeedProps) {
   if (scores.length === 0) {
     return (
-      <Alert icon={<IconAlertCircle size={16} />} color="orange" title="Aucune activité">
-        Cette faction n&apos;a encore participé à aucune activité.
+      <Alert icon={<IconAlertCircle size={16} />} color="orange" title="Aucune Epitech Race">
+        Cette faction n&apos;a encore participé à aucune Epitech Race.
       </Alert>
     );
   }

@@ -114,15 +114,15 @@ export default function ActivitiesClient({ factions }: ActivitiesClientProps) {
               <IconTrophy size={22} />
             </ThemeIcon>
             <Stack gap={0}>
-              <Title order={2}>Activités</Title>
+              <Title order={2}>Epitech Race</Title>
               <Text c="dimmed" fz="sm">
-                {total} activité(s) enregistrée(s)
+                {total} Epitech Race enregistrée(s)
               </Text>
             </Stack>
           </Group>
 
           <Button leftSection={<IconPlus size={16} />} onClick={openCreate}>
-            Nouvelle activité
+            Nouvelle Epitech Race
           </Button>
         </Group>
 
@@ -156,7 +156,7 @@ export default function ActivitiesClient({ factions }: ActivitiesClientProps) {
       <ActivityFormModal
         opened={createOpened}
         onClose={closeCreate}
-        onSaved={() => refresh("Activité créée avec succès.")}
+        onSaved={() => refresh("Epitech Race créée avec succès.")}
         activity={null}
         factions={factions}
       />
@@ -164,7 +164,7 @@ export default function ActivitiesClient({ factions }: ActivitiesClientProps) {
       <ActivityFormModal
         opened={editOpened}
         onClose={closeEdit}
-        onSaved={() => refresh("Activité mise à jour.")}
+        onSaved={() => refresh("Epitech Race mise à jour.")}
         activity={editActivity}
         factions={factions}
       />
@@ -172,7 +172,7 @@ export default function ActivitiesClient({ factions }: ActivitiesClientProps) {
       <DeleteActivityModal
         opened={deleteOpened}
         onClose={closeDelete}
-        onDeleted={() => refresh("Activité supprimée.")}
+        onDeleted={() => refresh("Epitech Race supprimée.")}
         activity={deleteActivity}
       />
     </>

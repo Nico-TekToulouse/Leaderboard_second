@@ -15,7 +15,6 @@ import ActivityFeed from "@/components/ActivityFeed";
 import BackButton from "@/components/BackButton";
 import { fetchFactionDetail } from "@/lib/factions";
 import { fetchMembersByFaction } from "@/lib/members";
-import { FACTION_COLORS } from "@/lib/theme";
 
 type FactionDetailPageProps = {
   params: Promise<{ id: string }>;
@@ -28,12 +27,6 @@ const RANK_LABELS: Record<number, string> = {
   4: "4ème",
 };
 
-const FACTION_MANTINE_COLOR: Record<keyof typeof FACTION_COLORS, string> = {
-  fire: "red",
-  water: "blue",
-  earth: "green",
-  air: "violet",
-};
 
 export default async function FactionDetailPage({ params }: FactionDetailPageProps) {
   const { id } = await params;
@@ -44,8 +37,7 @@ export default async function FactionDetailPage({ params }: FactionDetailPagePro
 
   if (!faction) notFound();
 
-  const hexColor = FACTION_COLORS[faction.color];
-  const mantineColor = FACTION_MANTINE_COLOR[faction.color];
+  const hexColor = faction.hexColor;
 
   return (
     <Stack gap="xl">
@@ -77,14 +69,14 @@ export default async function FactionDetailPage({ params }: FactionDetailPagePro
           </Group>
 
           <Stack gap="xs" align="flex-end">
-            <Badge size="xl" variant="light" color={mantineColor}>
+            <Badge size="xl" variant="light" color={hexColor}>
               {RANK_LABELS[faction.rank] ?? `${faction.rank}ème`}
             </Badge>
             <Group gap="xs">
-              <ThemeIcon size="sm" color={mantineColor} variant="light">
+              <ThemeIcon size="sm" color={hexColor} variant="light">
                 <IconTrophy size={12} />
               </ThemeIcon>
-              <Text fw={800} fz="xl" c={`${mantineColor}.6`}>
+              <Text fw={800} fz="xl" style={{ color: hexColor }}>
                 {faction.totalPoints.toLocaleString("fr-FR")} pts
               </Text>
             </Group>
@@ -94,7 +86,7 @@ export default async function FactionDetailPage({ params }: FactionDetailPagePro
 
       <Paper shadow="xs" p="md" radius="md" withBorder>
         <Group gap="sm" mb="md">
-          <ThemeIcon size="sm" color={mantineColor} variant="light">
+          <ThemeIcon size="sm" color={hexColor} variant="light">
             <IconUsers size={14} />
           </ThemeIcon>
           <Title order={4}>
@@ -109,7 +101,7 @@ export default async function FactionDetailPage({ params }: FactionDetailPagePro
               <Group key={member.id} gap="xs" p="xs"
                 style={{ borderRadius: 8, background: "var(--mantine-color-gray-0)" }}
               >
-                <ThemeIcon size="sm" radius="xl" color={mantineColor} variant="light">
+                <ThemeIcon size="sm" radius="xl" color={hexColor} variant="light">
                   <IconUser size={12} />
                 </ThemeIcon>
                 <Text fz="sm" fw={500} style={{ flex: 1 }} lineClamp={1}>
@@ -123,9 +115,9 @@ export default async function FactionDetailPage({ params }: FactionDetailPagePro
 
       <Paper shadow="xs" p="md" radius="md" withBorder>
         <Title order={4} mb="md">
-          Historique des activités
+          Historique des Epitech Race
         </Title>
-        <ActivityFeed scores={faction.scores} factionColor={mantineColor} />
+        <ActivityFeed scores={faction.scores} factionColor={hexColor} />
       </Paper>
     </Stack>
   );

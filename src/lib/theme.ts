@@ -9,6 +9,14 @@ export const FACTION_COLORS = {
 
 export type FactionName = keyof typeof FACTION_COLORS;
 
+/** Correspondance FactionName → nom de couleur Mantine */
+export const FACTION_MANTINE_COLOR: Record<FactionName, string> = {
+  fire: "red",
+  water: "blue",
+  earth: "green",
+  air: "violet",
+};
+
 export const theme: MantineThemeOverride = createTheme({
   primaryColor: "blue",
   colors: {

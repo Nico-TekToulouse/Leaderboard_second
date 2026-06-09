@@ -72,3 +72,24 @@ export type PaginatedUsers = {
   page: number;
   pageSize: number;
 };
+
+/** Payload for bulk delete action */
+export type BulkDeletePayload = {
+  action: "delete";
+  ids: string[];
+};
+
+/** Payload for bulk faction reassign action */
+export type BulkReassignPayload = {
+  action: "reassign";
+  ids: string[];
+  faction_id: string | null;
+};
+
+/** Union of all bulk action payloads */
+export type BulkUsersPayload = BulkDeletePayload | BulkReassignPayload;
+
+/** Result returned by the bulk action API endpoint */
+export type BulkUsersResult = {
+  affected: number;
+};

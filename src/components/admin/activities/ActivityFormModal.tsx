@@ -204,7 +204,7 @@ export default function ActivityFormModal({
           <ThemeIcon color="blue" variant="light" size="md">
             <IconTrophy size={16} />
           </ThemeIcon>
-          <Text fw={600}>{isEdit ? "Modifier l'activité" : "Nouvelle activité"}</Text>
+          <Text fw={600}>{isEdit ? "Modifier l'Epitech Race" : "Nouvelle Epitech Race"}</Text>
         </Group>
       }
       size="lg"
@@ -212,7 +212,7 @@ export default function ActivityFormModal({
       <Stack gap="md">
         {/* Champs activité */}
         <TextInput
-          label="Nom de l'activité"
+          label="Nom de l'Epitech Race"
           placeholder="ex: Course d'orientation"
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -364,7 +364,7 @@ export default function ActivityFormModal({
             loading={loading}
             leftSection={<IconPlus size={16} />}
           >
-            {isEdit ? "Enregistrer" : "Créer l'activité"}
+            {isEdit ? "Enregistrer" : "Créer l'Epitech Race"}
           </Button>
         </Group>
       </Stack>

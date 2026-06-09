@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   const body = (await request.json()) as ActivityInsert;
 
   if (!body.name?.trim()) {
-    return NextResponse.json({ error: "Le nom de l'activité est requis." }, { status: 400 });
+    return NextResponse.json({ error: "Le nom de l'Epitech Race est requis." }, { status: 400 });
   }
   if (!body.date) {
     return NextResponse.json({ error: "La date est requise." }, { status: 400 });
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
   if (activityError || !activity) {
     return NextResponse.json(
-      { error: activityError?.message ?? "Erreur lors de la création de l'activité." },
+      { error: activityError?.message ?? "Erreur lors de la création de l'Epitech Race." },
       { status: 500 }
     );
   }

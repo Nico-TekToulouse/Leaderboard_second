@@ -17,7 +17,17 @@ import {
   Divider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconSettings, IconUsers, IconLogout, IconArrowLeft, IconChevronRight, IconTrophy, IconShield } from "@tabler/icons-react";
+import {
+  IconSettings,
+  IconUsers,
+  IconLogout,
+  IconArrowLeft,
+  IconChevronRight,
+  IconTrophy,
+  IconShield,
+  IconInfoCircle,
+  IconClipboardList,
+} from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -31,9 +41,31 @@ type AdminNavItem = {
 
 const ADMIN_NAV_ITEMS: AdminNavItem[] = [
   { label: "Dashboard", href: "/admin", icon: <IconSettings size={18} /> },
-  { label: "Utilisateurs", href: "/admin/users", icon: <IconUsers size={18} /> },
-  { label: "Activités", href: "/admin/activities", icon: <IconTrophy size={18} /> },
-  { label: "Factions", href: "/admin/factions", icon: <IconShield size={18} /> },
+  {
+    label: "Utilisateurs",
+    href: "/admin/users",
+    icon: <IconUsers size={18} />,
+  },
+  {
+    label: "Epitech Race",
+    href: "/admin/activities",
+    icon: <IconTrophy size={18} />,
+  },
+  {
+    label: "Factions",
+    href: "/admin/factions",
+    icon: <IconShield size={18} />,
+  },
+  {
+    label: "Informations",
+    href: "/admin/info",
+    icon: <IconInfoCircle size={18} />,
+  },
+  {
+    label: "Worksheets",
+    href: "/admin/worksheets",
+    icon: <IconClipboardList size={18} />,
+  },
 ];
 
 type AdminLayoutProps = {
@@ -106,7 +138,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       <AppShellNavbar p={0}>
         {/* Nav header */}
         <Box p="md" pb="xs">
-          <Text fz="xs" fw={700} c="blue.5" tt="uppercase" style={{ letterSpacing: 1 }}>
+          <Text
+            fz="xs"
+            fw={700}
+            c="blue.5"
+            tt="uppercase"
+            style={{ letterSpacing: 1 }}
+          >
             Navigation
           </Text>
         </Box>
@@ -145,7 +183,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 <Text fz="xs" fw={500} truncate>
                   {adminEmail}
                 </Text>
-                <Text fz="xs" c="dimmed">Administrateur</Text>
+                <Text fz="xs" c="dimmed">
+                  Administrateur
+                </Text>
               </Box>
             </Group>
           )}

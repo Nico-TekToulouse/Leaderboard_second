@@ -45,7 +45,7 @@ export default async function Home() {
                 key={faction.id}
                 id={faction.id}
                 name={faction.name}
-                color={faction.color}
+                hexColor={faction.hexColor}
                 logo={faction.logo}
                 totalPoints={faction.totalPoints}
                 rank={index + 1}
@@ -57,6 +57,7 @@ export default async function Home() {
             factions={factions}
             byActivity={chartData.byActivity}
             byDay={chartData.byDay}
+            factionSeries={chartData.factionSeries}
           />
         </>
       )}

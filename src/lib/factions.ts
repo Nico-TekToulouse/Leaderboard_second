@@ -1,5 +1,7 @@
 import { createServerClient } from "@/lib/supabase-server";
 import type { FactionName } from "@/lib/theme";
+import { FACTION_SERIES, buildFactionSeries } from "@/components/charts/factionSeries";
+import type { FactionSeries } from "@/components/charts/factionSeries";
 
 export type ActivityScore = {
   activityId: string;
@@ -14,6 +16,7 @@ export type FactionDetail = {
   id: string;
   name: string;
   color: FactionName;
+  hexColor: string;
   logo: string | null;
   totalPoints: number;
   rank: number;
@@ -24,6 +27,7 @@ export type FactionRow = {
   id: string;
   name: string;
   color: FactionName;
+  hexColor: string;
   totalPoints: number;
   logo: string | null;
 };
@@ -60,7 +64,7 @@ type DbScore = {
  * Maps a hex color from the DB to the nearest FactionName theme key.
  * Red → fire, Green → earth, Blue → water, Purple/Violet → air.
  */
-function hexToFactionName(hex: string): FactionName {
+export function hexToFactionName(hex: string): FactionName {
   const r = parseInt(hex.slice(1, 3), 16);
   const g = parseInt(hex.slice(3, 5), 16);
   const b = parseInt(hex.slice(5, 7), 16);
@@ -102,6 +106,7 @@ export async function fetchFactionLeaderboard(): Promise<FactionRow[]> {
       id: faction.id,
       name: faction.name,
       color: hexToFactionName(faction.color),
+      hexColor: faction.color,
       totalPoints: pointsByFaction[faction.id] ?? 0,
       logo: faction.logo,
     }))
@@ -171,6 +176,7 @@ export async function fetchFactionDetail(id: string): Promise<FactionDetail | nu
     id: faction.id,
     name: faction.name,
     color: hexToFactionName(faction.color),
+    hexColor: faction.color as string,
     logo: (faction.logo as string | null) ?? null,
     totalPoints,
     rank,
@@ -192,6 +198,7 @@ type DbFactionColor = {
 export type ChartData = {
   byActivity: ActivityChartPoint[];
   byDay: DayChartPoint[];
+  factionSeries: FactionSeries[];
 };
 
 export async function fetchAllFactionScores(): Promise<ChartData> {
@@ -207,7 +214,7 @@ export async function fetchAllFactionScores(): Promise<ChartData> {
 
   if (scoresError || factionsError) {
     console.error("Chart data fetch error:", scoresError ?? factionsError);
-    return { byActivity: [], byDay: [] };
+    return { byActivity: [], byDay: [], factionSeries: FACTION_SERIES };
   }
 
   const factionColorMap = ((factions ?? []) as DbFactionColor[]).reduce<Record<string, FactionName>>(
@@ -288,5 +295,12 @@ export async function fetchAllFactionScores(): Promise<ChartData> {
     };
   });
 
-  return { byActivity, byDay };
+  const dynamicFactionSeries = buildFactionSeries(
+    ((factions ?? []) as DbFactionColor[]).map((f) => ({
+      color: hexToFactionName(f.color),
+      hexColor: f.color,
+    })),
+  );
+
+  return { byActivity, byDay, factionSeries: dynamicFactionSeries };
 }

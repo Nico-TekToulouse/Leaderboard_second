@@ -5,13 +5,14 @@ import { IconChartBar, IconChartLine, IconTable } from "@tabler/icons-react";
 import ActivityBarChart from "@/components/charts/ActivityBarChart";
 import DayLineChart from "@/components/charts/DayLineChart";
 import Leaderboard from "@/components/Leaderboard";
-import type { FactionMetaMap } from "@/components/charts/factionSeries";
+import type { FactionMetaMap, FactionSeries } from "@/components/charts/factionSeries";
 import type { ActivityChartPoint, DayChartPoint, FactionRow } from "@/lib/factions";
 
 type LeaderboardTabsProps = {
   factions: FactionRow[];
   byActivity: ActivityChartPoint[];
   byDay: DayChartPoint[];
+  factionSeries: FactionSeries[];
 };
 
 type TabHeaderProps = {
@@ -46,7 +47,7 @@ function buildFactionMetaMap(factions: FactionRow[]): FactionMetaMap {
   };
 }
 
-export default function LeaderboardTabs({ factions, byActivity, byDay }: LeaderboardTabsProps) {
+export default function LeaderboardTabs({ factions, byActivity, byDay, factionSeries }: LeaderboardTabsProps) {
   const meta = buildFactionMetaMap(factions);
 
   return (
@@ -57,7 +58,7 @@ export default function LeaderboardTabs({ factions, byActivity, byDay }: Leaderb
             Classement
           </Tabs.Tab>
           <Tabs.Tab value="activity" leftSection={<IconChartBar size={15} />} fw={600}>
-            Par activité
+            Par Epitech Race
           </Tabs.Tab>
           <Tabs.Tab value="day" leftSection={<IconChartLine size={15} />} fw={600}>
             Par jour
@@ -68,7 +69,7 @@ export default function LeaderboardTabs({ factions, byActivity, byDay }: Leaderb
           <TabHeader
             icon={<IconTable size={16} />}
             title="Classement des factions"
-            description="Scores totaux cumulés sur toutes les activités"
+            description="Scores totaux cumulés sur toutes les Epitech Race"
             color="blue"
           />
           <Leaderboard factions={factions} />
@@ -77,11 +78,11 @@ export default function LeaderboardTabs({ factions, byActivity, byDay }: Leaderb
         <Tabs.Panel value="activity">
           <TabHeader
             icon={<IconChartBar size={16} />}
-            title="Points par activité"
-            description="Comparaison des 4 factions sur chaque activité"
+            title="Points par Epitech Race"
+            description="Comparaison des 4 factions sur chaque Epitech Race"
             color="orange"
           />
-          <ActivityBarChart data={byActivity} meta={meta} />
+          <ActivityBarChart data={byActivity} meta={meta} factionSeries={factionSeries} />
         </Tabs.Panel>
 
         <Tabs.Panel value="day">
@@ -91,7 +92,7 @@ export default function LeaderboardTabs({ factions, byActivity, byDay }: Leaderb
             description="Progression des points au fil des jours"
             color="teal"
           />
-          <DayLineChart data={byDay} meta={meta} />
+          <DayLineChart data={byDay} meta={meta} factionSeries={factionSeries} />
         </Tabs.Panel>
       </Tabs>
     </Paper>

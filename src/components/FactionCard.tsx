@@ -1,11 +1,10 @@
 import { Card, Group, Text, Badge, Avatar, Stack } from "@mantine/core";
 import Link from "next/link";
-import type { FACTION_COLORS, FactionName } from "@/lib/theme";
 
 type FactionCardProps = {
   id: string;
   name: string;
-  color: FactionName;
+  hexColor: string;
   logo: string | null;
   totalPoints: number;
   rank: number;
@@ -21,12 +20,11 @@ const RANK_LABELS: Record<number, string> = {
 export default function FactionCard({
   id,
   name,
-  color,
+  hexColor,
   logo,
   totalPoints,
   rank,
 }: FactionCardProps) {
-  const hexColor: string = ({ fire: "#E53935", water: "#1E88E5", earth: "#43A047", air: "#8E24AA" } satisfies typeof FACTION_COLORS)[color];
 
   return (
     <Link href={`/faction/${id}`} style={{ textDecoration: "none" }}>

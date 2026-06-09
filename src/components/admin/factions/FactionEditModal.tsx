@@ -11,6 +11,7 @@ import {
   ThemeIcon,
   Avatar,
   FileInput,
+  ColorInput,
 } from "@mantine/core";
 import {
   IconShield,
@@ -52,6 +53,7 @@ export default function FactionEditModal({
 }: FactionEditModalProps) {
   const [name, setName] = useState("");
   const [nameError, setNameError] = useState<string | null>(null);
+  const [color, setColor] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Logo
@@ -64,6 +66,7 @@ export default function FactionEditModal({
   useEffect(() => {
     if (opened && faction) {
       setName(faction.name);
+      setColor(faction.color);
       setLogoFile(null);
       setLogoAction("keep");
       setLocalPreview(null);
@@ -108,12 +111,16 @@ export default function FactionEditModal({
     let latest: FactionAdminRow = faction!;
 
     try {
-      // 1. Mettre à jour le nom si modifié
-      if (trimmedName !== faction!.name) {
+      // 1. Mettre à jour le nom et/ou la couleur si modifiés
+      if (trimmedName !== faction!.name || color !== faction!.color) {
+        const patch: Record<string, string> = {};
+        if (trimmedName !== faction!.name) patch.name = trimmedName;
+        if (color !== faction!.color) patch.color = color;
+
         const res = await fetch(`/api/admin/factions/${faction!.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: trimmedName }),
+          body: JSON.stringify(patch),
         });
         if (!res.ok) {
           const data = (await res.json()) as FactionPatchError;
@@ -224,7 +231,7 @@ export default function FactionEditModal({
                 h={36}
                 style={{
                   borderRadius: "50%",
-                  background: faction.color,
+                  background: color || faction.color,
                   flexShrink: 0,
                 }}
               />
@@ -242,6 +249,15 @@ export default function FactionEditModal({
           onChange={(e) => setName(e.target.value)}
           error={nameError}
           required
+        />
+
+        <ColorInput
+          label="Couleur de la faction"
+          description="Utilisée pour les progress bars, graphiques et badges."
+          placeholder="#E53935"
+          format="hex"
+          value={color}
+          onChange={setColor}
         />
 
         {/* Upload du logo */}

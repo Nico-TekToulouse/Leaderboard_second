@@ -14,18 +14,18 @@ import {
 import { Center, Stack, Text, ThemeIcon } from "@mantine/core";
 import { IconChartBar } from "@tabler/icons-react";
 import { ChartTooltip } from "@/components/charts/ChartTooltip";
-import { FACTION_SERIES } from "@/components/charts/factionSeries";
-import type { FactionMetaMap } from "@/components/charts/factionSeries";
+import type { FactionMetaMap, FactionSeries } from "@/components/charts/factionSeries";
 import type { ActivityChartPoint } from "@/lib/factions";
 
 type ActivityBarChartProps = {
   data: ActivityChartPoint[];
   meta: FactionMetaMap;
+  factionSeries: FactionSeries[];
 };
 
 type LegendFormatterResult = React.ReactNode;
 
-export default function ActivityBarChart({ data, meta }: ActivityBarChartProps) {
+export default function ActivityBarChart({ data, meta, factionSeries }: ActivityBarChartProps) {
   if (data.length === 0) {
     return (
       <Center py={60}>
@@ -33,7 +33,7 @@ export default function ActivityBarChart({ data, meta }: ActivityBarChartProps) 
           <ThemeIcon size={48} radius="xl" variant="light" color="gray">
             <IconChartBar size={24} />
           </ThemeIcon>
-          <Text c="dimmed" fz="sm">Aucune activité enregistrée pour le moment.</Text>
+          <Text c="dimmed" fz="sm">Aucune Epitech Race enregistrée pour le moment.</Text>
         </Stack>
       </Center>
     );
@@ -55,7 +55,7 @@ export default function ActivityBarChart({ data, meta }: ActivityBarChartProps) 
         barGap={3}
       >
         <defs>
-          {FACTION_SERIES.map((f) => (
+          {factionSeries.map((f) => (
             <linearGradient key={f.key} id={`grad-${f.key}`} x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={f.color} stopOpacity={1} />
               <stop offset="100%" stopColor={f.color} stopOpacity={0.6} />
@@ -89,6 +89,7 @@ export default function ActivityBarChart({ data, meta }: ActivityBarChartProps) 
               payload={props.payload}
               label={typeof props.label === "string" ? props.label : undefined}
               meta={meta}
+              factionSeries={factionSeries}
             />
           )}
           cursor={{ fill: "var(--mantine-color-gray-1)" }}
@@ -99,7 +100,7 @@ export default function ActivityBarChart({ data, meta }: ActivityBarChartProps) 
           formatter={legendFormatter}
         />
 
-        {FACTION_SERIES.map((f) => (
+        {factionSeries.map((f) => (
           <Bar key={f.key} dataKey={f.key} fill={`url(#grad-${f.key})`} radius={[6, 6, 0, 0]}>
             {data.map((_, i) => (
               <Cell key={i} fill={`url(#grad-${f.key})`} />

@@ -2,14 +2,14 @@
 
 import { Avatar, Box, Group, Paper, Text } from "@mantine/core";
 import type { TooltipPayloadEntry } from "recharts";
-import type { FactionMetaMap, FactionSeriesKey } from "@/components/charts/factionSeries";
-import { FACTION_SERIES } from "@/components/charts/factionSeries";
+import type { FactionMetaMap, FactionSeries, FactionSeriesKey } from "@/components/charts/factionSeries";
 
 type ChartTooltipProps = {
   active?: boolean;
   payload?: ReadonlyArray<TooltipPayloadEntry>;
   label?: string;
   meta: FactionMetaMap;
+  factionSeries: FactionSeries[];
 };
 
 /**
@@ -17,7 +17,7 @@ type ChartTooltipProps = {
  * Affiche les 4 factions triées par points décroissants avec leur rang,
  * leur logo (si disponible) ou une pastille de couleur, leur nom BDD et leurs points.
  */
-export function ChartTooltip({ active, payload, label, meta }: ChartTooltipProps) {
+export function ChartTooltip({ active, payload, label, meta, factionSeries }: ChartTooltipProps) {
   if (!active || !payload?.length) return null;
 
   const sorted = [...payload]
@@ -44,7 +44,7 @@ export function ChartTooltip({ active, payload, label, meta }: ChartTooltipProps
 
           const factionMeta = meta[key];
           const seriesColor =
-            FACTION_SERIES.find((s) => s.key === key)?.color ?? (typeof entry.color === "string" ? entry.color : "#888");
+            factionSeries.find((s) => s.key === key)?.color ?? (typeof entry.color === "string" ? entry.color : "#888");
           const entryLabel = factionMeta?.label ?? key;
           const logo = factionMeta?.logo ?? null;
           const isFirst = index === 0;

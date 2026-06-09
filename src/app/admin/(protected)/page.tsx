@@ -9,7 +9,7 @@ import {
   ThemeIcon,
   Group,
 } from "@mantine/core";
-import { IconUsers, IconSettings, IconTrophy, IconShield } from "@tabler/icons-react";
+import { IconUsers, IconSettings, IconTrophy, IconShield, IconQrcode } from "@tabler/icons-react";
 import Link from "next/link";
 
 export default function AdminDashboardPage() {
@@ -80,10 +80,29 @@ export default function AdminDashboardPage() {
             <ThemeIcon size="lg" radius="md" color="orange" variant="light">
               <IconTrophy size={24} />
             </ThemeIcon>
-            <Title order={4}>Activités</Title>
+            <Title order={4}>Epitech Race</Title>
           </Group>
           <Text c="dimmed" fz="sm">
-            Ajouter des activités et attribuer des points aux factions.
+            Ajouter des Epitech Race et attribuer des points aux factions.
+          </Text>
+        </Paper>
+        <Paper
+          component={Link}
+          href="/admin/info-pages"
+          shadow="xs"
+          p="lg"
+          radius="md"
+          withBorder
+          style={{ textDecoration: "none", cursor: "pointer" }}
+        >
+          <Group gap="sm" mb="xs">
+            <ThemeIcon size="lg" radius="md" color="blue" variant="light">
+              <IconQrcode size={24} />
+            </ThemeIcon>
+            <Title order={4}>Pages d'info / QR codes</Title>
+          </Group>
+          <Text c="dimmed" fz="sm">
+            Créer des pages d'information et générer des QR codes pour les afficher.
           </Text>
         </Paper>
       </SimpleGrid>

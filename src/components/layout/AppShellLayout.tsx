@@ -22,6 +22,7 @@ import {
   IconCalendar,
   IconLink,
   IconSettings,
+  IconClipboardList,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -37,7 +38,12 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Leaderboard", href: "/", icon: <IconTrophy size={18} /> },
   { label: "Factions", href: "/faction", icon: <IconUsers size={18} /> },
   { label: "Planning", href: "/planning", icon: <IconCalendar size={18} /> },
-  { label: "Liens utiles", href: "/links", icon: <IconLink size={18} /> },
+  { label: "Activité", href: "/activite", icon: <IconClipboardList size={18} /> },
+  {
+    label: "Informations utiles",
+    href: "/links",
+    icon: <IconLink size={18} />,
+  },
   { label: "Admin", href: "/admin", icon: <IconSettings size={18} /> },
 ];
 
@@ -69,7 +75,7 @@ export default function AppShellLayout({ children }: AppShellLayoutProps) {
             </Text>
           </Group>
           <Title order={4} fw={500} c="dimmed" visibleFrom="sm">
-            LeaderBoard — Stage Intensif
+            Leaderboard des factions — Stage de seconde
           </Title>
           <Group gap="xs">
             <Avatar color="blue" radius="xl" size="sm">

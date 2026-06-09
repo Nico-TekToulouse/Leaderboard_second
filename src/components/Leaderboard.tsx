@@ -1,10 +1,9 @@
 import { Avatar, Badge, Box, Group, Paper, Progress, Stack, Text } from "@mantine/core";
-import type { FactionName } from "@/lib/theme";
 
 type FactionRow = {
   id: string;
   name: string;
-  color: FactionName;
+  hexColor: string;
   logo: string | null;
   totalPoints: number;
 };
@@ -13,26 +12,12 @@ type LeaderboardProps = {
   factions: FactionRow[];
 };
 
-const FACTION_HEX: Record<FactionName, string> = {
-  fire: "#E53935",
-  water: "#1E88E5",
-  earth: "#43A047",
-  air: "#8E24AA",
-};
-
-const FACTION_BG: Record<FactionName, string> = {
-  fire: "rgba(229,57,53,0.07)",
-  water: "rgba(30,136,229,0.07)",
-  earth: "rgba(67,160,71,0.07)",
-  air: "rgba(142,36,170,0.07)",
-};
-
-const FACTION_MANTINE_COLOR: Record<FactionName, string> = {
-  fire: "red",
-  water: "blue",
-  earth: "green",
-  air: "violet",
-};
+function hexToBackground(hex: string): string {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
+  return `rgba(${r},${g},${b},0.07)`;
+}
 
 const RANK_CONFIG: Record<number, { label: string; badgeColor: string; size: string }> = {
   0: { label: "🥇", badgeColor: "#F59E0B", size: "28px" },
@@ -49,8 +34,7 @@ export default function Leaderboard({ factions }: LeaderboardProps) {
       {sorted.map((faction, index) => {
         const pct = maxPoints > 0 ? (faction.totalPoints / maxPoints) * 100 : 0;
         const rankCfg = RANK_CONFIG[index];
-        const hex = FACTION_HEX[faction.color];
-        const mantineColor = FACTION_MANTINE_COLOR[faction.color];
+        const hex = faction.hexColor;
         const isFirst = index === 0;
 
         return (
@@ -61,7 +45,7 @@ export default function Leaderboard({ factions }: LeaderboardProps) {
             withBorder
             style={{
               borderLeft: `5px solid ${hex}`,
-              background: isFirst ? FACTION_BG[faction.color] : undefined,
+              background: isFirst ? hexToBackground(hex) : undefined,
               transition: "box-shadow 150ms ease",
             }}
           >
@@ -100,7 +84,7 @@ export default function Leaderboard({ factions }: LeaderboardProps) {
               <Box style={{ flex: 1, minWidth: 80 }}>
                 <Progress
                   value={pct}
-                  color={mantineColor}
+                  color={hex}
                   size={isFirst ? "xl" : "lg"}
                   radius="xl"
                   striped={isFirst}
@@ -110,7 +94,7 @@ export default function Leaderboard({ factions }: LeaderboardProps) {
 
               {/* Score */}
               <Box w={100} style={{ textAlign: "right", flexShrink: 0 }}>
-                <Text fw={800} fz={isFirst ? "lg" : "md"} c={`${mantineColor}.6`}>
+                <Text fw={800} fz={isFirst ? "lg" : "md"} style={{ color: hex }}>
                   {faction.totalPoints.toLocaleString("fr-FR")}
                 </Text>
                 <Text fz="xs" c="dimmed">pts</Text>
