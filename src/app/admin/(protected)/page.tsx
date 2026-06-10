@@ -9,8 +9,70 @@ import {
   ThemeIcon,
   Group,
 } from "@mantine/core";
-import { IconUsers, IconSettings, IconTrophy, IconShield, IconQrcode } from "@tabler/icons-react";
+import {
+  IconUsers,
+  IconSettings,
+  IconTrophy,
+  IconShield,
+  IconQrcode,
+  IconInfoCircle,
+  IconClipboardList,
+} from "@tabler/icons-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
+
+type AdminDashboardCard = {
+  title: string;
+  href: string;
+  description: string;
+  icon: ReactNode;
+  color: string;
+};
+
+const ADMIN_DASHBOARD_CARDS: AdminDashboardCard[] = [
+  {
+    title: "Utilisateurs",
+    href: "/admin/users",
+    description: "Gérer les 120 élèves, leurs factions et importer des listes.",
+    icon: <IconUsers size={24} />,
+    color: "blue",
+  },
+  {
+    title: "Epitech Race",
+    href: "/admin/activities",
+    description: "Ajouter des Epitech Race et attribuer des points aux factions.",
+    icon: <IconTrophy size={24} />,
+    color: "orange",
+  },
+  {
+    title: "Factions",
+    href: "/admin/factions",
+    description: "Renommer les factions et mettre à jour leur logo.",
+    icon: <IconShield size={24} />,
+    color: "violet",
+  },
+  {
+    title: "Informations",
+    href: "/admin/info",
+    description: "Gérer le règlement, les sanctions et les liens Discord.",
+    icon: <IconInfoCircle size={24} />,
+    color: "blue",
+  },
+  {
+    title: "Worksheets",
+    href: "/admin/worksheets",
+    description: "Créer des activités interactives pour les stagiaires.",
+    icon: <IconClipboardList size={24} />,
+    color: "violet",
+  },
+  {
+    title: "Pages d'info",
+    href: "/admin/info-pages",
+    description: "Créer des pages d'information et générer des QR codes pour les afficher.",
+    icon: <IconQrcode size={24} />,
+    color: "blue",
+  },
+];
 
 export default function AdminDashboardPage() {
   return (
@@ -28,75 +90,26 @@ export default function AdminDashboardPage() {
       </Group>
 
       <SimpleGrid cols={{ base: 1, sm: 2, lg: 3 }} spacing="md">
-        <Paper
-          component={Link}
-          href="/admin/factions"
-          p="lg"
-          withBorder
-          style={{ textDecoration: "none", cursor: "pointer" }}
-        >
-          <Group gap="sm" mb="xs">
-            <ThemeIcon size="lg" radius="md" color="violet" variant="light">
-              <IconShield size={24} />
-            </ThemeIcon>
-            <Title order={4}>Factions</Title>
-          </Group>
-          <Text c="dimmed" fz="sm">
-            Renommer les factions et mettre à jour leur logo.
-          </Text>
-        </Paper>
-        <Paper
-          component={Link}
-          href="/admin/users"
-          p="lg"
-          withBorder
-          style={{ textDecoration: "none", cursor: "pointer" }}
-        >
-          <Group gap="sm" mb="xs">
-            <ThemeIcon size="lg" radius="md" color="blue" variant="light">
-              <IconUsers size={24} />
-            </ThemeIcon>
-            <Title order={4}>Utilisateurs</Title>
-          </Group>
-          <Text c="dimmed" fz="sm">
-            Gérer les 120 élèves, leurs factions et importer des listes.
-          </Text>
-        </Paper>
-
-        <Paper
-          component={Link}
-          href="/admin/activities"
-          p="lg"
-          withBorder
-          style={{ textDecoration: "none", cursor: "pointer" }}
-        >
-          <Group gap="sm" mb="xs">
-            <ThemeIcon size="lg" radius="md" color="orange" variant="light">
-              <IconTrophy size={24} />
-            </ThemeIcon>
-            <Title order={4}>Epitech Race</Title>
-          </Group>
-          <Text c="dimmed" fz="sm">
-            Ajouter des Epitech Race et attribuer des points aux factions.
-          </Text>
-        </Paper>
-        <Paper
-          component={Link}
-          href="/admin/info-pages"
-          p="lg"
-          withBorder
-          style={{ textDecoration: "none", cursor: "pointer" }}
-        >
-          <Group gap="sm" mb="xs">
-            <ThemeIcon size="lg" radius="md" color="blue" variant="light">
-              <IconQrcode size={24} />
-            </ThemeIcon>
-            <Title order={4}>Pages d'info / QR codes</Title>
-          </Group>
-          <Text c="dimmed" fz="sm">
-            Créer des pages d'information et générer des QR codes pour les afficher.
-          </Text>
-        </Paper>
+        {ADMIN_DASHBOARD_CARDS.map((card) => (
+          <Paper
+            key={card.href}
+            component={Link}
+            href={card.href}
+            p="lg"
+            withBorder
+            style={{ textDecoration: "none", cursor: "pointer" }}
+          >
+            <Group gap="sm" mb="xs">
+              <ThemeIcon size="lg" radius="md" color={card.color} variant="light">
+                {card.icon}
+              </ThemeIcon>
+              <Title order={4}>{card.title}</Title>
+            </Group>
+            <Text c="dimmed" fz="sm">
+              {card.description}
+            </Text>
+          </Paper>
+        ))}
       </SimpleGrid>
     </Stack>
   );
