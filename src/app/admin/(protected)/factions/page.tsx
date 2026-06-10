@@ -2,6 +2,8 @@ import { createServerClient } from "@/lib/supabase-server";
 import FactionsClient from "@/components/admin/factions/FactionsClient";
 import type { FactionAdminRow } from "@/components/admin/factions/FactionEditModal";
 
+export const dynamic = "force-dynamic";
+
 type DbFactionRow = {
   id: string;
   name: string;

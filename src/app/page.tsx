@@ -12,6 +12,8 @@ import ErrorAlert from "@/components/ErrorAlert";
 import LeaderboardTabs from "@/components/LeaderboardTabs";
 import { fetchFactionLeaderboard, fetchAllFactionScores } from "@/lib/factions";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const [factions, chartData] = await Promise.all([
     fetchFactionLeaderboard(),
