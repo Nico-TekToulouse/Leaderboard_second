@@ -65,10 +65,6 @@ export const theme: MantineThemeOverride = createTheme({
       styles: {
         root: {
           borderRadius: 4,
-          "&[data-active]": {
-            backgroundColor: EPITECH_TOKENS.brandBlue,
-            color: "#FFFFFF",
-          },
         },
       },
     },
