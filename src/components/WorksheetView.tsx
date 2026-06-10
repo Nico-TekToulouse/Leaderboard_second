@@ -2,7 +2,7 @@
 
 import {
   Stack,
-  TextInput,
+  Autocomplete,
   Select,
   Button,
   Group,
@@ -24,6 +24,7 @@ import type {
   WorksheetResponseInsert,
   AnswerValue,
   WorksheetQuestion,
+  WorksheetMember,
 } from "@/types/worksheet";
 import QuestionText from "@/components/worksheet/QuestionText";
 import QuestionTable from "@/components/worksheet/QuestionTable";
@@ -39,6 +40,7 @@ type ViewFaction = {
 type WorksheetViewProps = {
   worksheet: Worksheet;
   factions: ViewFaction[];
+  members: WorksheetMember[];
 };
 
 type Phase = "identify" | "answer" | "submitted";
@@ -99,12 +101,15 @@ function renderQuestion(
   }
 }
 
-export default function WorksheetView({ worksheet, factions }: WorksheetViewProps) {
+export default function WorksheetView({ worksheet, factions, members }: WorksheetViewProps) {
   const DRAFT_KEY = `worksheet_draft_${worksheet.id}`;
 
+  /** Nom complet tel que tapé / sélectionné dans l'Autocomplete */
+  const [memberValue, setMemberValue] = useState("");
+  /** Faction verrouillée quand un membre inscrit est sélectionné */
+  const [factionLocked, setFactionLocked] = useState(false);
+
   const [phase, setPhase] = useState<Phase>("identify");
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
   const [factionId, setFactionId] = useState("");
   const [answers, setAnswers] = useState<WorksheetAnswers>({});
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -112,15 +117,43 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [identifyError, setIdentifyError] = useState<string | null>(null);
 
+  /** Map factionId → nom de faction pour les libellés dans l'autocomplete */
+  const factionNameById = Object.fromEntries(factions.map((f) => [f.id, f.name]));
+
+  /** Résout un nom complet vers le membre correspondant, ou null */
+  function findMember(fullName: string): WorksheetMember | null {
+    return members.find(
+      (m) => `${m.firstName} ${m.lastName}` === fullName
+    ) ?? null;
+  }
+
+  /** Dérive [prénom, nom] depuis memberValue : membre inscrit ou découpage sur premier espace */
+  function deriveNames(): { firstName: string; lastName: string } {
+    const matched = findMember(memberValue.trim());
+    if (matched) return { firstName: matched.firstName, lastName: matched.lastName };
+    const trimmed = memberValue.trim();
+    const spaceIndex = trimmed.indexOf(" ");
+    if (spaceIndex === -1) return { firstName: trimmed, lastName: "" };
+    return {
+      firstName: trimmed.slice(0, spaceIndex),
+      lastName: trimmed.slice(spaceIndex + 1),
+    };
+  }
+
   useEffect(() => {
     try {
       const raw = localStorage.getItem(DRAFT_KEY);
       if (!raw) return;
       const draft = JSON.parse(raw) as WorksheetDraft;
       if (draft.worksheetId !== worksheet.id) return;
-      setFirstname(draft.respondentFirstname);
-      setLastname(draft.respondentLastname);
+      const restoredValue = `${draft.respondentFirstname} ${draft.respondentLastname}`.trim();
+      setMemberValue(restoredValue);
       setFactionId(draft.factionId);
+      // Réévaluer le verrou : si le nom correspond à un membre inscrit, on verrouille
+      const matched = members.find(
+        (m) => `${m.firstName} ${m.lastName}` === restoredValue
+      );
+      setFactionLocked(!!matched);
       setAnswers(draft.answers);
       const sectionIndex = Math.min(
         draft.currentSectionIndex ?? 0,
@@ -139,16 +172,18 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
 
   useEffect(() => {
     if (phase !== "answer") return;
+    const { firstName, lastName } = deriveNames();
     const draft: WorksheetDraft = {
       worksheetId: worksheet.id,
       answers,
-      respondentFirstname: firstname,
-      respondentLastname: lastname,
+      respondentFirstname: firstName,
+      respondentLastname: lastName,
       factionId,
       currentSectionIndex,
     };
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
-  }, [answers, firstname, lastname, factionId, currentSectionIndex, phase, DRAFT_KEY, worksheet.id]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [answers, memberValue, factionId, currentSectionIndex, phase, DRAFT_KEY, worksheet.id]);
 
   function handleAnswerChange(questionId: string, value: AnswerValue) {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -157,8 +192,8 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
   function handleReset() {
     localStorage.removeItem(DRAFT_KEY);
     setAnswers({});
-    setFirstname("");
-    setLastname("");
+    setMemberValue("");
+    setFactionLocked(false);
     setFactionId("");
     setCurrentSectionIndex(0);
     setSubmitError(null);
@@ -167,12 +202,13 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
   }
 
   function handleStart() {
-    if (!firstname.trim()) {
-      setIdentifyError("Le prénom est requis.");
+    const { firstName, lastName } = deriveNames();
+    if (!firstName.trim()) {
+      setIdentifyError("Le prénom est requis (ex : Marie Dupont).");
       return;
     }
-    if (!lastname.trim()) {
-      setIdentifyError("Le nom est requis.");
+    if (!lastName.trim()) {
+      setIdentifyError("Le nom complet est requis (ex : Marie Dupont).");
       return;
     }
     if (!factionId) {
@@ -183,15 +219,28 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
     setPhase("answer");
   }
 
+  function handleMemberChange(value: string) {
+    setMemberValue(value);
+    const matched = findMember(value.trim());
+    if (matched) {
+      setFactionId(matched.factionId);
+      setFactionLocked(true);
+    } else {
+      setFactionLocked(false);
+    }
+  }
+
   async function handleSubmit() {
     setSubmitError(null);
     setSubmitting(true);
 
+    const { firstName, lastName } = deriveNames();
+
     const payload: WorksheetResponseInsert = {
       worksheet_id: worksheet.id,
       faction_id: factionId,
-      respondent_firstname: firstname.trim(),
-      respondent_lastname: lastname.trim(),
+      respondent_firstname: firstName.trim(),
+      respondent_lastname: lastName.trim(),
       answers,
     };
 
@@ -227,7 +276,7 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
           </ThemeIcon>
           <Title order={3}>Réponses envoyées !</Title>
           <Text c="dimmed">
-            Merci {firstname}, tes réponses ont bien été enregistrées.
+            Merci {deriveNames().firstName}, tes réponses ont bien été enregistrées.
           </Text>
         </Stack>
       </Paper>
@@ -249,19 +298,35 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
             </Alert>
           )}
 
-          <TextInput
-            label="Prénom"
-            placeholder="Ton prénom"
-            value={firstname}
-            onChange={(e) => setFirstname(e.currentTarget.value)}
+          <Autocomplete
+            label="Membre"
+            placeholder="Commence à taper ton prénom ou nom…"
+            value={memberValue}
+            onChange={handleMemberChange}
+            data={members.map((m) => ({
+              value: `${m.firstName} ${m.lastName}`,
+              label: `${m.firstName} ${m.lastName}`,
+            }))}
+            renderOption={({ option }) => {
+              const matched = findMember(option.value);
+              const factionName = matched ? (factionNameById[matched.factionId] ?? "") : "";
+              return (
+                <Text fz="sm">
+                  {option.value}
+                  {factionName ? (
+                    <Text component="span" fz="xs" c="dimmed" ml={6}>
+                      — {factionName}
+                    </Text>
+                  ) : null}
+                </Text>
+              );
+            }}
             required
-          />
-          <TextInput
-            label="Nom"
-            placeholder="Ton nom de famille"
-            value={lastname}
-            onChange={(e) => setLastname(e.currentTarget.value)}
-            required
+            description={
+              factionLocked
+                ? undefined
+                : "Si tu n'es pas dans la liste, saisis ton prénom suivi de ton nom."
+            }
           />
           <Select
             label="Faction"
@@ -269,6 +334,7 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
             data={factionOptions}
             value={factionId || null}
             onChange={(v) => setFactionId(v ?? "")}
+            disabled={factionLocked}
             required
           />
           <Button onClick={handleStart} fullWidth>
@@ -293,7 +359,7 @@ export default function WorksheetView({ worksheet, factions }: WorksheetViewProp
           </Group>
           <Group gap="xs" align="center">
             <Text fz="xs" c="dimmed">
-              {firstname} {lastname}
+              {memberValue.trim() || "—"}
             </Text>
             <Button
               variant="subtle"

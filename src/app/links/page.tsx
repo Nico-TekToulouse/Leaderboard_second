@@ -5,8 +5,6 @@ import {
   Title,
   Text,
   Paper,
-  List,
-  ListItem,
   Button,
 } from "@mantine/core";
 import {
@@ -18,44 +16,38 @@ import {
 } from "@tabler/icons-react";
 import { fetchInfoEntries } from "@/lib/info";
 import ErrorAlert from "@/components/ErrorAlert";
+import MarkdownContent from "@/components/MarkdownContent";
 import type { InfoEntry } from "@/types/info";
 
 export const dynamic = "force-dynamic";
 
-type ListSectionProps = {
-  icon: React.ReactNode;
-  title: string;
-  color: string;
+type RulesSectionProps = {
   entries: InfoEntry[];
 };
 
-function ListSection({ icon, title, color, entries }: ListSectionProps) {
+async function RulesSection({ entries }: RulesSectionProps) {
   if (entries.length === 0) return null;
 
   return (
     <Paper shadow="xs" p="xl" radius="md" withBorder>
       <Stack gap="md">
         <Group gap="sm">
-          <ThemeIcon size="lg" radius="md" color={color} variant="light">
-            {icon}
+          <ThemeIcon size="lg" radius="md" color="blue" variant="light">
+            <IconFileText size={18} />
           </ThemeIcon>
-          <Title order={3}>{title}</Title>
+          <Title order={3}>Règlement intérieur</Title>
         </Group>
 
-        <List spacing="sm" size="sm">
-          {entries.map((entry) => (
-            <ListItem key={entry.id}>
-              <Text fw={600} component="span">
+        {entries.map((entry) => (
+          <Stack key={entry.id} gap={4}>
+            {entry.title && (
+              <Text fw={700} fz="md">
                 {entry.title}
               </Text>
-              {entry.content && (
-                <Text c="dimmed" fz="sm" mt={2}>
-                  {entry.content}
-                </Text>
-              )}
-            </ListItem>
-          ))}
-        </List>
+            )}
+            {entry.content && <MarkdownContent markdown={entry.content} />}
+          </Stack>
+        ))}
       </Stack>
     </Paper>
   );
@@ -176,12 +168,7 @@ export default async function LinksPage() {
         />
       ) : (
         <>
-          <ListSection
-            icon={<IconFileText size={18} />}
-            title="Règlement intérieur"
-            color="blue"
-            entries={rules}
-          />
+          <RulesSection entries={rules} />
           <TextSection
             icon={<IconAlertTriangle size={18} />}
             title="Rappel des sanctions"

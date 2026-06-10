@@ -1,4 +1,5 @@
 import { fetchActiveWorksheet } from "@/lib/worksheets";
+import { fetchAllMembers } from "@/lib/members";
 import { createServerClient } from "@/lib/supabase-server";
 import WorksheetView from "@/components/WorksheetView";
 import { Stack, Group, ThemeIcon, Title, Text, Paper } from "@mantine/core";
@@ -15,9 +16,10 @@ type Faction = {
 export default async function ActivitePage() {
   const supabase = createServerClient();
 
-  const [worksheet, factionsRes] = await Promise.all([
+  const [worksheet, factionsRes, members] = await Promise.all([
     fetchActiveWorksheet(),
     supabase.from("factions").select("id, name, color").order("name"),
+    fetchAllMembers(),
   ]);
 
   const factions = (factionsRes.data as Faction[]) ?? [];
@@ -39,7 +41,7 @@ export default async function ActivitePage() {
           <Text c="dimmed" ta="center">Aucune activité en cours pour le moment.</Text>
         </Paper>
       ) : (
-        <WorksheetView worksheet={worksheet} factions={factions} />
+        <WorksheetView worksheet={worksheet} factions={factions} members={members} />
       )}
     </Stack>
   );

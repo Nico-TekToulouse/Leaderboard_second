@@ -1,4 +1,5 @@
 import { createServerClient } from "@/lib/supabase-server";
+import type { WorksheetMember } from "@/types/worksheet";
 
 export type FactionMember = {
   id: string;
@@ -35,6 +36,31 @@ export async function fetchMembersByFaction(factionId: string): Promise<FactionM
     lastName: u.last_name,
     email: u.email,
   }));
+}
+
+/** Récupère tous les membres inscrits (ayant une faction) pour l'autocomplétion du worksheet */
+export async function fetchAllMembers(): Promise<WorksheetMember[]> {
+  const supabase = createServerClient();
+
+  const { data, error } = await supabase
+    .from("users")
+    .select("id, first_name, last_name, faction_id")
+    .not("faction_id", "is", null)
+    .order("last_name");
+
+  if (error) {
+    console.error("Supabase members fetch error:", error);
+    return [];
+  }
+
+  return ((data ?? []) as DbUser[])
+    .filter((u): u is DbUser & { faction_id: string } => u.faction_id !== null)
+    .map((u) => ({
+      id: u.id,
+      firstName: u.first_name,
+      lastName: u.last_name,
+      factionId: u.faction_id,
+    }));
 }
 
 export type FactionWithMembers = {
