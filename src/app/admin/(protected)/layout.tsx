@@ -69,7 +69,7 @@ const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     icon: <IconClipboardList size={18} />,
   },
   {
-    label: "Pages d'info",
+    label: "QR Codes",
     href: "/admin/info-pages",
     icon: <IconQrcode size={18} />,
   },
@@ -78,6 +78,13 @@ const ADMIN_NAV_ITEMS: AdminNavItem[] = [
 type AdminLayoutProps = {
   children: ReactNode;
 };
+
+function isAdminNavActive(pathname: string, href: string): boolean {
+  if (href === "/admin") {
+    return pathname === "/admin";
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
   const [opened, { toggle }] = useDisclosure();
@@ -173,11 +180,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 label={item.label}
                 leftSection={item.icon}
                 rightSection={<IconChevronRight size={14} />}
-                active={
-                  item.href === "/admin"
-                    ? pathname === "/admin"
-                    : pathname.startsWith(item.href)
-                }
+                active={isAdminNavActive(pathname, item.href)}
                 variant="filled"
               />
             ))}
