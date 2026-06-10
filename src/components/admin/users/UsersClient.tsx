@@ -313,7 +313,7 @@ export default function UsersClient({ factions }: UsersClientProps) {
         )}
 
         {/* Table */}
-        <Paper shadow="xs" p="md" radius="md" withBorder>
+        <Paper p="md" withBorder>
           <TextInput
             placeholder="Rechercher par nom, prénom ou email…"
             leftSection={<IconSearch size={16} />}

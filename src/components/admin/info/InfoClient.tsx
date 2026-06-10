@@ -138,7 +138,7 @@ export default function InfoClient() {
           </Alert>
         )}
 
-        <Paper shadow="xs" radius="md" withBorder>
+        <Paper withBorder>
           <Tabs
             value={activeTab}
             onChange={(v) => setActiveTab((v as InfoCategory) ?? "rules")}
@@ -202,6 +202,7 @@ export default function InfoClient() {
                                   variant="subtle"
                                   color="blue"
                                   onClick={() => handleEdit(entry)}
+                                  aria-label={`Modifier ${entry.title}`}
                                 >
                                   <IconPencil size={16} />
                                 </ActionIcon>
@@ -209,6 +210,7 @@ export default function InfoClient() {
                                   variant="subtle"
                                   color="red"
                                   onClick={() => handleDelete(entry)}
+                                  aria-label={`Supprimer ${entry.title}`}
                                 >
                                   <IconTrash size={16} />
                                 </ActionIcon>

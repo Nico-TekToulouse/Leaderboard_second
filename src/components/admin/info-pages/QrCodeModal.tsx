@@ -76,6 +76,7 @@ export default function QrCodeModal({ opened, onClose, page }: QrCodeModalProps)
                     variant="subtle"
                     onClick={copy}
                     size="sm"
+                    aria-label={copied ? "URL copiée" : "Copier l'URL"}
                   >
                     {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
                   </ActionIcon>
