@@ -99,3 +99,11 @@ export type WorksheetDraft = {
   factionId: string;
   currentSectionIndex: number;
 };
+
+/** Membre inscrit exposé au formulaire d'identification du worksheet */
+export type WorksheetMember = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  factionId: string;
+};

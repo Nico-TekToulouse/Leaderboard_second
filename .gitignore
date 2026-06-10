@@ -1,5 +1,7 @@
 .env
 node_modules
-.xlsx
+*.xlsx
 ~*
 .next
+*.csv
+*.md
