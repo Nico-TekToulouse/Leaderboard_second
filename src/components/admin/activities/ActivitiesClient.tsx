@@ -133,7 +133,7 @@ export default function ActivitiesClient({ factions }: ActivitiesClientProps) {
         )}
 
         {/* Table */}
-        <Paper shadow="xs" p="md" radius="md" withBorder>
+        <Paper p="md" withBorder>
           <Box pos="relative">
             <LoadingOverlay
               visible={loading}

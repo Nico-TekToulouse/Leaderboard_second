@@ -6,6 +6,7 @@ import {
   AppShellNavbar,
   AppShellMain,
   AppShellSection,
+  Burger,
   Button,
   Group,
   NavLink,
@@ -27,6 +28,7 @@ import {
   IconShield,
   IconInfoCircle,
   IconClipboardList,
+  IconQrcode,
 } from "@tabler/icons-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -66,6 +68,11 @@ const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     href: "/admin/worksheets",
     icon: <IconClipboardList size={18} />,
   },
+  {
+    label: "Pages d'info",
+    href: "/admin/info-pages",
+    icon: <IconQrcode size={18} />,
+  },
 ];
 
 type AdminLayoutProps = {
@@ -73,7 +80,7 @@ type AdminLayoutProps = {
 };
 
 export default function AdminLayout({ children }: AdminLayoutProps) {
-  const [, { toggle }] = useDisclosure();
+  const [opened, { toggle }] = useDisclosure();
   const pathname = usePathname();
   const router = useRouter();
   const [adminEmail, setAdminEmail] = useState<string | null>(null);
@@ -97,12 +104,19 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{ width: 240, breakpoint: "sm", collapsed: { mobile: true } }}
+      navbar={{ width: 220, breakpoint: "sm", collapsed: { mobile: !opened } }}
       padding="md"
     >
       <AppShellHeader>
         <Group h="100%" px="md" justify="space-between">
           <Group gap="xs">
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+              aria-label="Ouvrir la navigation admin"
+            />
             <Text fw={800} fz="xl" c="blue.6" style={{ letterSpacing: -0.5 }}>
               {"{ EPITECH }"}
             </Text>
@@ -165,7 +179,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                     : pathname.startsWith(item.href)
                 }
                 variant="filled"
-                style={{ borderRadius: "var(--mantine-radius-md)" }}
               />
             ))}
           </Stack>
@@ -195,7 +208,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             label="Retour au site"
             leftSection={<IconArrowLeft size={16} />}
             variant="subtle"
-            style={{ borderRadius: "var(--mantine-radius-md)" }}
           />
         </AppShellSection>
       </AppShellNavbar>

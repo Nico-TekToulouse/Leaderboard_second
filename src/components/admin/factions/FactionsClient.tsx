@@ -61,7 +61,7 @@ export default function FactionsClient({ initialFactions }: FactionsClientProps)
 
         <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md">
           {factions.map((faction) => (
-            <Paper key={faction.id} shadow="xs" p="lg" radius="md" withBorder>
+            <Paper key={faction.id} p="lg" withBorder>
               <Group justify="space-between" align="flex-start" wrap="nowrap">
                 <Group gap="sm" align="center" style={{ flex: 1, minWidth: 0 }}>
                   {faction.logo ? (

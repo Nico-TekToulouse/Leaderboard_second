@@ -160,7 +160,7 @@ export default function WorksheetsClient({ factions }: WorksheetsClientProps) {
             variant="subtle"
             color="blue"
             size="sm"
-            title="Voir les réponses"
+            aria-label={`Voir les réponses de ${ws.title}`}
             onClick={() => handleViewResponses(ws)}
           >
             <IconEye size={16} />
@@ -169,7 +169,7 @@ export default function WorksheetsClient({ factions }: WorksheetsClientProps) {
             variant="subtle"
             color="gray"
             size="sm"
-            title="Modifier"
+            aria-label={`Modifier ${ws.title}`}
             onClick={() => handleEdit(ws)}
           >
             <IconPencil size={16} />
@@ -178,7 +178,7 @@ export default function WorksheetsClient({ factions }: WorksheetsClientProps) {
             variant="subtle"
             color={ws.is_active ? "orange" : "green"}
             size="sm"
-            title={ws.is_active ? "Désactiver" : "Activer"}
+            aria-label={ws.is_active ? `Désactiver ${ws.title}` : `Activer ${ws.title}`}
             onClick={() => handleToggleActive(ws)}
           >
             {ws.is_active ? <IconToggleRight size={16} /> : <IconToggleLeft size={16} />}
@@ -187,7 +187,7 @@ export default function WorksheetsClient({ factions }: WorksheetsClientProps) {
             variant="subtle"
             color="red"
             size="sm"
-            title="Supprimer"
+            aria-label={`Supprimer ${ws.title}`}
             onClick={() => handleDelete(ws)}
           >
             <IconTrash size={16} />
@@ -220,7 +220,7 @@ export default function WorksheetsClient({ factions }: WorksheetsClientProps) {
         </Alert>
       )}
 
-      <Paper shadow="xs" radius="md" withBorder>
+      <Paper withBorder>
         <Box pos="relative" mih={80}>
           <LoadingOverlay visible={loading} />
           {!loading && worksheets.length === 0 ? (

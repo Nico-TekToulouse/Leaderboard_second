@@ -97,7 +97,7 @@ export default function AdminLoginPage() {
   return (
     <Center h="100vh" bg="gray.0">
       <Box w={380}>
-        <Paper shadow="md" p="xl" radius="md" withBorder>
+        <Paper p="xl" withBorder>
           <Stack gap="lg" align="center" mb="lg">
             <IconShield size={40} color="var(--mantine-color-blue-6)" />
             <Stack gap={4} align="center">

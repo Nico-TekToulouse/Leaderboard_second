@@ -55,6 +55,10 @@ export default function AppShellLayout({ children }: AppShellLayoutProps) {
   const [opened, { toggle }] = useDisclosure();
   const pathname = usePathname();
 
+  if (pathname.startsWith("/admin")) {
+    return <>{children}</>;
+  }
+
   return (
     <AppShell
       header={{ height: 60 }}

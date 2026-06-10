@@ -177,6 +177,7 @@ export default function InfoPagesClient() {
                         variant="light"
                         color="blue"
                         onClick={() => handleQr(page)}
+                        aria-label={`Afficher le QR code de ${page.title}`}
                       >
                         <IconQrcode size={16} />
                       </ActionIcon>
@@ -186,6 +187,7 @@ export default function InfoPagesClient() {
                         variant="light"
                         color="orange"
                         onClick={() => handleEdit(page)}
+                        aria-label={`Modifier ${page.title}`}
                       >
                         <IconPencil size={16} />
                       </ActionIcon>
@@ -195,6 +197,7 @@ export default function InfoPagesClient() {
                         variant="light"
                         color="red"
                         onClick={() => handleDelete(page)}
+                        aria-label={`Supprimer ${page.title}`}
                       >
                         <IconTrash size={16} />
                       </ActionIcon>

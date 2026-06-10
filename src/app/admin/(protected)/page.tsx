@@ -31,9 +31,7 @@ export default function AdminDashboardPage() {
         <Paper
           component={Link}
           href="/admin/factions"
-          shadow="xs"
           p="lg"
-          radius="md"
           withBorder
           style={{ textDecoration: "none", cursor: "pointer" }}
         >
@@ -50,9 +48,7 @@ export default function AdminDashboardPage() {
         <Paper
           component={Link}
           href="/admin/users"
-          shadow="xs"
           p="lg"
-          radius="md"
           withBorder
           style={{ textDecoration: "none", cursor: "pointer" }}
         >
@@ -70,9 +66,7 @@ export default function AdminDashboardPage() {
         <Paper
           component={Link}
           href="/admin/activities"
-          shadow="xs"
           p="lg"
-          radius="md"
           withBorder
           style={{ textDecoration: "none", cursor: "pointer" }}
         >
@@ -89,9 +83,7 @@ export default function AdminDashboardPage() {
         <Paper
           component={Link}
           href="/admin/info-pages"
-          shadow="xs"
           p="lg"
-          radius="md"
           withBorder
           style={{ textDecoration: "none", cursor: "pointer" }}
         >
