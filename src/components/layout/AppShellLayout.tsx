@@ -10,7 +10,6 @@ import {
   Group,
   NavLink,
   Text,
-  Avatar,
   Box,
   ScrollArea,
   Title,
@@ -66,8 +65,16 @@ export default function AppShellLayout({ children }: AppShellLayoutProps) {
       padding="md"
     >
       <AppShellHeader>
-        <Group h="100%" px="md" justify="space-between">
-          <Group>
+        <Box
+          h="100%"
+          px="md"
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+          }}
+        >
+          <Group gap="xs" wrap="nowrap">
             <Burger
               opened={opened}
               onClick={toggle}
@@ -78,15 +85,11 @@ export default function AppShellLayout({ children }: AppShellLayoutProps) {
               {"{ EPITECH }"}
             </Text>
           </Group>
-          <Title order={4} fw={500} c="dimmed" visibleFrom="sm">
+          <Title order={4} fw={500} c="dimmed" ta="center" visibleFrom="sm">
             Leaderboard des factions — Stage de seconde
           </Title>
-          <Group gap="xs">
-            <Avatar color="blue" radius="xl" size="sm">
-              E
-            </Avatar>
-          </Group>
-        </Group>
+          <Box aria-hidden="true" />
+        </Box>
       </AppShellHeader>
 
       <AppShellNavbar p="md">
