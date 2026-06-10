@@ -117,9 +117,9 @@ export default function InfoPagesClient() {
             <IconFileInfo size={22} />
           </ThemeIcon>
           <Stack gap={0}>
-            <Title order={2}>Pages d'information</Title>
+            <Title order={2}>Générer des QR Codes</Title>
             <Text c="dimmed" fz="sm">
-              Créez des pages publiques accessibles via QR code.
+              Générez des QR Codes pour afficher des pages d'information.
             </Text>
           </Stack>
         </Group>

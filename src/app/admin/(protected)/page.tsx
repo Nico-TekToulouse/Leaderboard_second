@@ -66,7 +66,7 @@ const ADMIN_DASHBOARD_CARDS: AdminDashboardCard[] = [
     color: "violet",
   },
   {
-    title: "Pages d'info",
+    title: "QR Codes",
     href: "/admin/info-pages",
     description: "Créer des pages d'information et générer des QR codes pour les afficher.",
     icon: <IconQrcode size={24} />,
