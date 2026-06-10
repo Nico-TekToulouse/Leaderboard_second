@@ -36,10 +36,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <ColorSchemeScript forceColorScheme="light" />
+        <ColorSchemeScript defaultColorScheme="auto" />
       </head>
       <body>
-        <MantineProvider theme={theme} forceColorScheme="light">
+        <MantineProvider theme={theme} defaultColorScheme="auto">
           <Notifications position="top-right" limit={5} />
           <AppShellLayout>{children}</AppShellLayout>
         </MantineProvider>

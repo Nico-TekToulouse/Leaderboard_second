@@ -53,7 +53,7 @@ export default function DayLineChart({ data, meta, factionSeries }: DayLineChart
         data={data}
         margin={{ top: 10, right: 16, left: 0, bottom: 20 }}
       >
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--mantine-color-gray-2)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--mantine-color-default-border)" vertical={false} />
 
         <XAxis
           dataKey="date"
@@ -94,7 +94,7 @@ export default function DayLineChart({ data, meta, factionSeries }: DayLineChart
             stroke={f.color}
             strokeWidth={2.5}
             dot={{ r: 3, strokeWidth: 0, fill: f.color }}
-            activeDot={{ r: 5, strokeWidth: 2, stroke: f.color, fill: "#fff" }}
+            activeDot={{ r: 5, strokeWidth: 2, stroke: f.color, fill: "var(--mantine-color-body)" }}
           />
         ))}
       </LineChart>

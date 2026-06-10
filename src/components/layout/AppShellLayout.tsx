@@ -24,6 +24,7 @@ import {
   IconClipboardList,
 } from "@tabler/icons-react";
 import Link from "next/link";
+import ColorSchemeToggle from "@/components/layout/ColorSchemeToggle";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
@@ -81,20 +82,22 @@ export default function AppShellLayout({ children }: AppShellLayoutProps) {
               hiddenFrom="sm"
               size="sm"
             />
-            <Text fw={800} fz="xl" c="blue.5" style={{ letterSpacing: -0.5 }}>
+            <Text fw={800} fz="xl" c="blue" style={{ letterSpacing: -0.5 }}>
               {"{ EPITECH }"}
             </Text>
           </Group>
           <Title order={4} fw={500} c="dimmed" ta="center" visibleFrom="sm">
             Leaderboard des factions — Stage de seconde
           </Title>
-          <Box aria-hidden="true" />
+          <Group justify="flex-end">
+            <ColorSchemeToggle />
+          </Group>
         </Box>
       </AppShellHeader>
 
       <AppShellNavbar p="md">
         <AppShellSection>
-          <Text fz="xs" fw={700} c="blue.5" mb="xs" tt="uppercase">
+          <Text fz="xs" fw={700} c="blue" mb="xs" tt="uppercase">
             Navigation
           </Text>
         </AppShellSection>
@@ -121,7 +124,7 @@ export default function AppShellLayout({ children }: AppShellLayoutProps) {
         <AppShellSection>
           <Box
             pt="md"
-            style={{ borderTop: "1px solid var(--mantine-color-gray-2)" }}
+            style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}
           >
             <Text fz="xs" c="dimmed" ta="center">
               Epitech - 2026

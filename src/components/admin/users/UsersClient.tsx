@@ -264,7 +264,7 @@ export default function UsersClient({ factions }: UsersClientProps) {
 
         {/* Barre d'actions groupées (visible uniquement si sélection non vide) */}
         {selected.size > 0 && (
-          <Paper withBorder p="sm" radius="md" bg="blue.0">
+          <Paper withBorder p="sm" radius="md" bg="light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-5))">
             <Group justify="space-between" wrap="wrap" gap="sm">
               <Group gap="sm" wrap="wrap">
                 <Badge size="lg" variant="filled" color="blue" radius="sm">

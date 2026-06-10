@@ -16,6 +16,10 @@ a {
 }
 
 .mantine-NavLink-root[data-active] {
-  background-color: #0000FF;
-  color: #FFFFFF;
+  background-color: var(--mantine-color-blue-filled);
+  color: var(--mantine-color-white);
+}
+
+:root[data-mantine-color-scheme="dark"] {
+  color-scheme: dark;
 }

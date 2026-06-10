@@ -423,8 +423,8 @@ export default function ImportUsersModal({
       size="lg"
     >
       <Stack gap="md">
-        <Paper p="sm" radius="md" bg="blue.0" withBorder style={{ borderColor: "var(--mantine-color-blue-2)" }}>
-          <Text fz="xs" c="blue.7" fw={500} mb={4}>Colonnes attendues</Text>
+        <Paper p="sm" radius="md" bg="light-dark(var(--mantine-color-blue-0), var(--mantine-color-dark-5))" withBorder style={{ borderColor: "light-dark(var(--mantine-color-blue-2), var(--mantine-color-dark-4))" }}>
+          <Text fz="xs" c="light-dark(var(--mantine-color-blue-7), var(--mantine-color-blue-3))" fw={500} mb={4}>Colonnes attendues</Text>
           <Group gap="xs">
             {["prénom", "nom", "email"].map((col) => (
               <Code key={col} fz="xs">{col}</Code>

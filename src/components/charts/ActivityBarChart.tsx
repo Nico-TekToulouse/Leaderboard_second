@@ -63,7 +63,7 @@ export default function ActivityBarChart({ data, meta, factionSeries }: Activity
           ))}
         </defs>
 
-        <CartesianGrid strokeDasharray="3 3" stroke="var(--mantine-color-gray-2)" vertical={false} />
+        <CartesianGrid strokeDasharray="3 3" stroke="var(--mantine-color-default-border)" vertical={false} />
 
         <XAxis
           dataKey="activity"
@@ -92,7 +92,7 @@ export default function ActivityBarChart({ data, meta, factionSeries }: Activity
               factionSeries={factionSeries}
             />
           )}
-          cursor={{ fill: "var(--mantine-color-gray-1)" }}
+          cursor={{ fill: "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))" }}
         />
 
         <Legend

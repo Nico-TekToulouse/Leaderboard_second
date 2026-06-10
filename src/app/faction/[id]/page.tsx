@@ -16,6 +16,8 @@ import BackButton from "@/components/BackButton";
 import { fetchFactionDetail } from "@/lib/factions";
 import { fetchMembersByFaction } from "@/lib/members";
 
+export const dynamic = "force-dynamic";
+
 type FactionDetailPageProps = {
   params: Promise<{ id: string }>;
 };
@@ -99,7 +101,7 @@ export default async function FactionDetailPage({ params }: FactionDetailPagePro
           <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, md: 4 }} spacing="xs">
             {members.map((member) => (
               <Group key={member.id} gap="xs" p="xs"
-                style={{ borderRadius: 8, background: "var(--mantine-color-gray-0)" }}
+                style={{ borderRadius: 8, background: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))" }}
               >
                 <ThemeIcon size="sm" radius="xl" color={hexColor} variant="light">
                   <IconUser size={12} />

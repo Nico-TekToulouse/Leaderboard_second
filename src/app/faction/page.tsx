@@ -16,6 +16,7 @@ import ErrorAlert from "@/components/ErrorAlert";
 import { fetchAllFactionsWithMembers } from "@/lib/members";
 import { fetchFactionLeaderboard } from "@/lib/factions";
 
+export const dynamic = "force-dynamic";
 
 export default async function FactionListPage() {
   const [factionsWithMembers, leaderboard] = await Promise.all([
@@ -92,15 +93,16 @@ export default async function FactionListPage() {
               <Group justify="space-between" mb="md">
                 <Group gap="sm">
                   <Avatar
+                    src={faction.logo}
                     size="md"
                     radius="xl"
-                    style={{ backgroundColor: faction.color }}
+                    style={faction.logo ? undefined : { backgroundColor: faction.color }}
                     color={faction.color}
                   >
-                    {faction.name[0].toUpperCase()}
+                    {!faction.logo && faction.name[0].toUpperCase()}
                   </Avatar>
                   <Stack gap={2}>
-                    <Text fw={700} fz="md" c="dark">
+                    <Text fw={700} fz="md">
                       {faction.name}
                     </Text>
                     <Text fz="xs" c="dimmed">
@@ -127,7 +129,7 @@ export default async function FactionListPage() {
                   ) : (
                     faction.members.map((member) => (
                       <Group key={member.id} gap="sm" px={4} py={4}
-                        style={{ borderRadius: 6, background: "var(--mantine-color-gray-0)" }}
+                        style={{ borderRadius: 6, background: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))" }}
                       >
                         <ThemeIcon size="sm" radius="xl" color={faction.color} variant="light">
                           <IconUser size={12} />

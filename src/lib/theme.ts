@@ -30,6 +30,7 @@ export const FACTION_MANTINE_COLOR: Record<FactionName, string> = {
 
 export const theme: MantineThemeOverride = createTheme({
   primaryColor: "blue",
+  primaryShade: { light: 5, dark: 3 },
   colors: {
     blue: [
       "#E6E6FF",

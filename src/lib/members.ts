@@ -67,6 +67,7 @@ export type FactionWithMembers = {
   id: string;
   name: string;
   color: string;
+  logo: string | null;
   members: FactionMember[];
 };
 
@@ -75,7 +76,7 @@ export async function fetchAllFactionsWithMembers(): Promise<FactionWithMembers[
 
   const [{ data: factions, error: fError }, { data: users, error: uError }] =
     await Promise.all([
-      supabase.from("factions").select("id, name, color").order("name"),
+      supabase.from("factions").select("id, name, color, logo").order("name"),
       supabase
         .from("users")
         .select("id, first_name, last_name, email, faction_id")
@@ -102,11 +103,12 @@ export async function fetchAllFactionsWithMembers(): Promise<FactionWithMembers[
     return acc;
   }, {});
 
-  return ((factions ?? []) as { id: string; name: string; color: string }[]).map(
+  return ((factions ?? []) as { id: string; name: string; color: string; logo: string | null }[]).map(
     (f) => ({
       id: f.id,
       name: f.name,
       color: f.color,
+      logo: f.logo ?? null,
       members: membersByFaction[f.id] ?? [],
     })
   );

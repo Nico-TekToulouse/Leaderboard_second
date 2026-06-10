@@ -33,6 +33,7 @@ import {
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import ColorSchemeToggle from "@/components/layout/ColorSchemeToggle";
 import { useEffect, useState, type ReactNode } from "react";
 
 type AdminNavItem = {
@@ -124,7 +125,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
               size="sm"
               aria-label="Ouvrir la navigation admin"
             />
-            <Text fw={800} fz="xl" c="blue.6" style={{ letterSpacing: -0.5 }}>
+            <Text fw={800} fz="xl" c="blue" style={{ letterSpacing: -0.5 }}>
               {"{ EPITECH }"}
             </Text>
             <Text fz="xs" c="dimmed" fw={500} visibleFrom="sm">
@@ -143,6 +144,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
                 </Text>
               </Group>
             )}
+            <ColorSchemeToggle />
             <Button
               variant="subtle"
               color="red"
@@ -162,7 +164,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <Text
             fz="xs"
             fw={700}
-            c="blue.5"
+            c="blue"
             tt="uppercase"
             style={{ letterSpacing: 1 }}
           >

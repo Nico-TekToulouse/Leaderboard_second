@@ -80,7 +80,7 @@ export function ChartTooltip({ active, payload, label, meta, factionSeries }: Ch
               >
                 {entryLabel}
               </Text>
-              <Text fz="xs" fw={isFirst ? 700 : 400} c="dark" style={{ flexShrink: 0 }}>
+              <Text fz="xs" fw={isFirst ? 700 : 400} style={{ flexShrink: 0 }}>
                 {points.toLocaleString("fr-FR")} pts
               </Text>
             </Group>

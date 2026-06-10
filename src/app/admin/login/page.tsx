@@ -95,7 +95,7 @@ function LoginForm() {
 
 export default function AdminLoginPage() {
   return (
-    <Center h="100vh" bg="gray.0">
+    <Center h="100vh" bg="var(--mantine-color-body)">
       <Box w={380}>
         <Paper p="xl" withBorder>
           <Stack gap="lg" align="center" mb="lg">
